@@ -17,12 +17,10 @@ import androidx.core.content.ContextCompat;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Create an intent that will open DestinationActivity when the notification is tapped
         Intent i = new Intent(context, DestinationActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
-        // Build the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "alo")
                 .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your notification icon
                 .setContentTitle("Alarm Manager")
