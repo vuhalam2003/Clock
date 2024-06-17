@@ -9,25 +9,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
+import android.widget.Button;
+import android.widget.Toast;
+import android.text.TextUtils;
+
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AlarmFragment extends Fragment {
 
-    private TextView selectedTimeTextView;
-    private Button selectTimeBtn, setAlarmBtn, cancelAlarmBtn;
+    private FloatingActionButton addAlarmBtn;
+    private LinearLayout addAlarmDetailsLayout;
+    private EditText editTextLabel;
+    private MultiAutoCompleteTextView multiAutoCompleteTextViewDays;
+    private Button buttonSaveAlarm;
     private int hour, minute;
     private AlarmManager alarmManager;
-    private ListView alarmListView;
+    private RecyclerView alarmRecyclerView;
     private ArrayList<Alarm> alarmList;
     private AlarmAdapter alarmAdapter;
 
@@ -36,23 +48,36 @@ public class AlarmFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alarm, container, false);
 
-        selectedTimeTextView = view.findViewById(R.id.selectedTime);
-        selectTimeBtn = view.findViewById(R.id.selectTimeBtn);
-        setAlarmBtn = view.findViewById(R.id.setAlarmBtn);
-        cancelAlarmBtn = view.findViewById(R.id.cancelAlarmBtn);
-        alarmListView = view.findViewById(R.id.alarmListView);
+        addAlarmBtn = view.findViewById(R.id.addAlarmBtn);
+        addAlarmDetailsLayout = view.findViewById(R.id.addAlarmDetailsLayout);
+        editTextLabel = view.findViewById(R.id.editTextLabel);
+        multiAutoCompleteTextViewDays = view.findViewById(R.id.multiAutoCompleteTextViewDays);
+        buttonSaveAlarm = view.findViewById(R.id.buttonSaveAlarm);
+        alarmRecyclerView = view.findViewById(R.id.alarmRecyclerView);
 
         alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
         alarmList = new ArrayList<>();
-        alarmAdapter = new AlarmAdapter(getActivity(), alarmList);
-        alarmListView.setAdapter(alarmAdapter);
+        alarmAdapter = new AlarmAdapter(alarmList);
+        alarmRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        alarmRecyclerView.setAdapter(alarmAdapter);
 
-        selectTimeBtn.setOnClickListener(v -> showTimePickerDialog());
-        setAlarmBtn.setOnClickListener(v -> setAlarm());
-        cancelAlarmBtn.setOnClickListener(v -> cancelAllAlarms());
+        addAlarmBtn.setOnClickListener(v -> {
+            showAlarmDetailsLayout();
+            showTimePickerDialog();
+        });
 
         return view;
+    }
+
+    private void showAlarmDetailsLayout() {
+        addAlarmBtn.setVisibility(View.GONE);
+        addAlarmDetailsLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAlarmDetailsLayout() {
+        addAlarmBtn.setVisibility(View.VISIBLE);
+        addAlarmDetailsLayout.setVisibility(View.GONE);
     }
 
     private void showTimePickerDialog() {
@@ -63,39 +88,44 @@ public class AlarmFragment extends Fragment {
         TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), (view, hourOfDay, minuteOfHour) -> {
             hour = hourOfDay;
             minute = minuteOfHour;
-            selectedTimeTextView.setText(String.format("%02d : %02d", hour, minute));
-        }, currentHour, currentMinute, true);
+            // setAlarm(hour, minute); // Do not set alarm immediately, wait for user to save
+        }, currentHour, currentMinute, false);
 
         timePickerDialog.show();
     }
 
-    private void setAlarm() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
+    public void saveAlarm(View view) {
+        String label = editTextLabel.getText().toString().trim();
+        String days = multiAutoCompleteTextViewDays.getText().toString().trim();
 
-        Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), alarmList.size(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            alarmList.add(new Alarm(hour, minute));
-            alarmAdapter.notifyDataSetChanged();
-            Toast.makeText(getActivity(), "Alarm set for " + String.format("%02d:%02d", hour, minute), Toast.LENGTH_SHORT).show();
+        if (label.isEmpty()) {
+            Toast.makeText(getActivity(), "Please enter an alarm label", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void cancelAllAlarms() {
-        if (alarmManager != null) {
-            for (int i = 0; i < alarmList.size(); i++) {
-                Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.cancel(pendingIntent);
-            }
-            alarmList.clear();
-            alarmAdapter.notifyDataSetChanged();
-            Toast.makeText(getActivity(), "All alarms canceled", Toast.LENGTH_SHORT).show();
+        if (days.isEmpty()) {
+            Toast.makeText(getActivity(), "Please select repeat days", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Split days input by comma and trim spaces
+        String[] daysArray = days.split(",");
+        for (int i = 0; i < daysArray.length; i++) {
+            daysArray[i] = daysArray[i].trim();
+        }
+
+        // Join days array to a single string with spaces
+        String formattedDays = TextUtils.join(" ", daysArray);
+
+        // Add the alarm to the list
+        alarmList.add(new Alarm(hour, minute, label, formattedDays, true));  // Add label, days, and switch state as needed
+        alarmAdapter.notifyDataSetChanged();
+
+        // Optionally, set alarm here if needed
+
+        Toast.makeText(getActivity(), "Alarm set for " + String.format("%02d:%02d", hour, minute), Toast.LENGTH_SHORT).show();
+
+        // Hide the alarm details layout after saving
+        hideAlarmDetailsLayout();
     }
 }
