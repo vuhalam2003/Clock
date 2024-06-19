@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">clockapp</string>
+    <string name="app_name">Alarm</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="add_alarm">Add Alarm</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="alarm_label">Alarm Label</string>
+    <string name="alarm_time">08:30</string>
+    <string name="alarm_period">AM</string>
+    <string name="alarm_days">S M T W T F S</string>
+
 </resources>

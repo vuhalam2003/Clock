@@ -1,14 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    android:padding="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#34344A"
+    android:outlineSpotShadowColor="@color/card_border_color">
 
-    <TextView
-        android:id="@+id/timeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="@android:color/black" />
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/alarmLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alarm Label"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp" />
+
+        <LinearLayout
+            android:id="@+id/timeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/alarmLabel"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/alarmTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="08:30"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                android:fontFamily="@font/roboto"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/alarmPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AM"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/alarmDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S M T W T F S"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto"
+            android:layout_below="@id/timeLayout"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+        <Switch
+            android:id="@+id/alarmSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_below="@id/alarmDays"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:paddingBottom="16dp"
+            app:trackTint="#F0F757"
+            app:thumbTint="#F0F757"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#34344A">
+
+    <EditText
+        android:id="@+id/editTextLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Label"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repeat Days"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@android:color/white"/>
+
+    <LinearLayout
+        android:id="@+id/repeatDaysLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <CheckBox
+            android:id="@+id/checkBoxSun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxMon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="M"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxTue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxWed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="W"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxThu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxFri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F"
+            android:textColor="@android:color/white"/>
+        <CheckBox
+            android:id="@+id/checkBoxSat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+</LinearLayout>

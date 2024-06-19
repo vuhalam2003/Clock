@@ -1,5 +1,6 @@
 package com.example.clockapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+
     }
 
     private void replaceFragment(Fragment fragment){
@@ -46,4 +48,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
+    private void openAlarmFragment() {
+        Fragment alarmFragment = new AlarmFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, alarmFragment);
+        transaction.commit();
+    }
+
 }

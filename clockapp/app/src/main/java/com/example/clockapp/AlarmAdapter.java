@@ -1,23 +1,28 @@
 package com.example.clockapp;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
 
     private ArrayList<Alarm> alarmList;
+    private OnItemClickListener listener;
 
-    public AlarmAdapter(ArrayList<Alarm> alarmList) {
+    public interface OnItemClickListener {
+        void onItemClick(Alarm alarm);
+    }
+
+    public AlarmAdapter(ArrayList<Alarm> alarmList, OnItemClickListener listener) {
         this.alarmList = alarmList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,9 +36,11 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
         Alarm alarm = alarmList.get(position);
         holder.alarmLabel.setText(alarm.getLabel());
-        holder.alarmTime.setText(String.format("%02d:%02d %s", alarm.getHour(), alarm.getMinute(), alarm.getPeriod()));
-        holder.alarmDays.setText(alarm.getDays());
+        holder.alarmTime.setText(String.format("%02d:%02d", alarm.getHour(), alarm.getMinute()));
+        holder.alarmPeriod.setText(alarm.getPeriod());
+        holder.alarmDays.setText(Html.fromHtml(getFormattedDays(alarm)));
         holder.alarmSwitch.setChecked(alarm.isEnabled());
+        holder.bind(alarm, listener);
     }
 
     @Override
@@ -42,7 +49,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     }
 
     static class AlarmViewHolder extends RecyclerView.ViewHolder {
-        TextView alarmLabel, alarmTime, alarmDays;
+        TextView alarmLabel, alarmTime, alarmPeriod, alarmDays;
         Switch alarmSwitch;
         CardView cardView;
 
@@ -50,8 +57,42 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             super(itemView);
             alarmLabel = itemView.findViewById(R.id.alarmLabel);
             alarmTime = itemView.findViewById(R.id.alarmTime);
+            alarmPeriod = itemView.findViewById(R.id.alarmPeriod);
             alarmDays = itemView.findViewById(R.id.alarmDays);
             alarmSwitch = itemView.findViewById(R.id.alarmSwitch);
         }
+
+        public void bind(final Alarm alarm, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(alarm);
+                }
+            });
+        }
+    }
+
+    private String getFormattedDays(Alarm alarm) {
+        StringBuilder days = new StringBuilder();
+        if (alarm.isRepeatSun()) days.append("<font color='#F0F757'>S</font> ");
+        else days.append("S ");
+        if (alarm.isRepeatMon()) days.append("<font color='#F0F757'>M</font> ");
+        else days.append("M ");
+        if (alarm.isRepeatTue()) days.append("<font color='#F0F757'>T</font> ");
+        else days.append("T ");
+        if (alarm.isRepeatWed()) days.append("<font color='#F0F757'>W</font> ");
+        else days.append("W ");
+        if (alarm.isRepeatThu()) days.append("<font color='#F0F757'>T</font> ");
+        else days.append("T ");
+        if (alarm.isRepeatFri()) days.append("<font color='#F0F757'>F</font> ");
+        else days.append("F ");
+        if (alarm.isRepeatSat()) days.append("<font color='#F0F757'>S</font> ");
+        else days.append("S ");
+
+        String daysString = days.toString().trim();
+        if (daysString.isEmpty()) {
+            daysString = "Everyday";
+        }
+        return daysString;
     }
 }
