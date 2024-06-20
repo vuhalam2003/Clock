@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <item android:id="@+id/alarm"
         android:title="Alarm"
-        android:icon="@drawable/baseline_access_alarm_24"
-        />
+        android:icon="@drawable/alarm_icon"
+        android:fontFamily="@font/roboto"/>
+
     <item android:id="@+id/timer"
         android:title="Timer"
-        android:icon="@drawable/baseline_timer_24"/>
+        android:icon="@drawable/stopwatch_icon"
+        android:fontFamily="@font/roboto"/>
+
     <item android:id="@+id/stopwatch"
         android:title="Stopwatch"
-        android:icon="@drawable/baseline_av_timer_24"/>
+        android:icon="@drawable/timer_icon"
+        android:fontFamily="@font/roboto"/>
 </menu>

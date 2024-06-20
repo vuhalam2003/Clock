@@ -1,19 +1,14 @@
 package com.example.clockapp;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
 import com.example.clockapp.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -23,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        // Update the initial state of the bottom navigation view
+        binding.bottomNavigationView.getMenu().findItem(R.id.alarm).setChecked(true);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item ->{
             int itemId = item.getItemId();
@@ -35,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new StopWatchFragment());
             }
 
-
+            // Update the checked state of the item
+            item.setChecked(true);
 
             return true;
         });
-
     }
 
     private void replaceFragment(Fragment fragment){
@@ -48,11 +47,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-    private void openAlarmFragment() {
-        Fragment alarmFragment = new AlarmFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, alarmFragment);
-        transaction.commit();
-    }
-
 }

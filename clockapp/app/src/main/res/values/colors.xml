@@ -13,4 +13,6 @@
     <color name="card_background_color">#2C2C2C</color>
     <color name="card_border_color">#3C3C3C</color>
     <color name="primary_color">#1D1D23</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
 </resources>
