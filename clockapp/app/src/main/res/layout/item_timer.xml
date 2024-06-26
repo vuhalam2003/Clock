@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="#34344A"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Label"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_bold"/>
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvLabel"
+            android:layout_marginTop="8dp"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="36sp"
+            android:fontFamily="@font/roboto_medium"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_below="@id/tvTime"
+            android:layout_marginTop="8dp"
+            android:progressDrawable="@drawable/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
+        <Button
+            android:id="@+id/btnStartPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progressBar"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#F0F757"
+            android:text="Start"
+            android:textColor="#34344A"
+            android:fontFamily="@font/roboto_bold"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

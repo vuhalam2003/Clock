@@ -1,64 +1,82 @@
 package com.example.clockapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TimerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TimerFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TimerDatabaseHelper timerDatabaseHelper;
+    private RecyclerView rvTimers;
+    private TimerListAdapter adapter;
+    private ArrayList<TimerItem> timerItems;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public TimerFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TimerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TimerFragment newInstance(String param1, String param2) {
-        TimerFragment fragment = new TimerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_timer, container, false);
+
+        timerDatabaseHelper = new TimerDatabaseHelper(getContext());
+        rvTimers = view.findViewById(R.id.rvTimers);
+        FloatingActionButton fabAddTimer = view.findViewById(R.id.fabAddTimer);
+
+        timerItems = timerDatabaseHelper.getAllTimers();
+        adapter = new TimerListAdapter(getContext(), timerItems);
+        rvTimers.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvTimers.setAdapter(adapter);
+
+        fabAddTimer.setOnClickListener(v -> showAddTimerDialog());
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_timer, container, false);
+    private void showAddTimerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_timer, null);
+        builder.setView(dialogView);
+
+        final EditText etLabel = dialogView.findViewById(R.id.etLabel);
+        final NumberPicker pickerMinutes = dialogView.findViewById(R.id.pickerMinutes);
+        final NumberPicker pickerSeconds = dialogView.findViewById(R.id.pickerSeconds);
+
+        pickerMinutes.setMinValue(0);
+        pickerMinutes.setMaxValue(59);
+        pickerSeconds.setMinValue(0);
+        pickerSeconds.setMaxValue(59);
+
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String label = etLabel.getText().toString();
+            int minutes = pickerMinutes.getValue();
+            int seconds = pickerSeconds.getValue();
+            long totalTime = (minutes * 60 + seconds) * 1000;
+
+            if (!label.isEmpty() && totalTime > 0) {
+                TimerItem newTimer = new TimerItem(label, totalTime, totalTime, false, false);
+                timerDatabaseHelper.addTimer(newTimer);
+                timerItems.add(newTimer);
+                adapter.notifyItemInserted(timerItems.size() - 1);
+            } else {
+                Toast.makeText(getContext(), "Please enter a valid label and time.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -7,5 +7,6 @@
     <string name="alarm_time">08:30</string>
     <string name="alarm_period">AM</string>
     <string name="alarm_days">S M T W T F S</string>
+    <string name="add_timer">Add Timer</string>
 
 </resources>

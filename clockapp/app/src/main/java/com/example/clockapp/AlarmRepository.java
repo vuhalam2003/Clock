@@ -1,6 +1,5 @@
 package com.example.clockapp;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,6 +34,7 @@ public class AlarmRepository {
         Log.d("Database", "Alarm added with id: " + id);
         db.close();
     }
+
     public ArrayList<Alarm> getAlarms() {
         ArrayList<Alarm> alarms = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -111,5 +111,4 @@ public class AlarmRepository {
             db.close();
         }
     }
-
 }

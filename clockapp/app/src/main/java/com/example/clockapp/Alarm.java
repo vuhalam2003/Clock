@@ -55,6 +55,10 @@ public class Alarm {
         return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public String getPeriod() {
         return hour < 12 ? "AM" : "PM";
     }
@@ -99,10 +103,6 @@ public class Alarm {
         return repeatSat;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public void setRepeatSun(boolean repeatSun) {
         this.repeatSun = repeatSun;
     }
@@ -129,5 +129,9 @@ public class Alarm {
 
     public void setRepeatSat(boolean repeatSat) {
         this.repeatSat = repeatSat;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

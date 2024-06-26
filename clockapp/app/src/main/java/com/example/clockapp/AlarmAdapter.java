@@ -1,5 +1,9 @@
 package com.example.clockapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +14,24 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
 
     private ArrayList<Alarm> alarmList;
     private OnItemClickListener listener;
+    private Context context;
+    private AlarmManager alarmManager;
 
     public interface OnItemClickListener {
         void onItemClick(Alarm alarm);
     }
 
-    public AlarmAdapter(ArrayList<Alarm> alarmList, OnItemClickListener listener) {
+    public AlarmAdapter(ArrayList<Alarm> alarmList, Context context, OnItemClickListener listener) {
         this.alarmList = alarmList;
+        this.context = context;
         this.listener = listener;
+        this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
     @NonNull
@@ -41,6 +50,18 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmDays.setText(Html.fromHtml(getFormattedDays(alarm)));
         holder.alarmSwitch.setChecked(alarm.isEnabled());
         holder.bind(alarm, listener);
+
+        holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            alarm.setEnabled(isChecked);
+            if (isChecked) {
+                setAlarm(alarm);
+            } else {
+                cancelAlarm(alarm);
+            }
+            // Update alarm in repository
+            AlarmRepository alarmRepository = new AlarmRepository(context);
+            alarmRepository.updateAlarm(alarm);
+        });
     }
 
     @Override
@@ -94,5 +115,23 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             daysString = "Everyday";
         }
         return daysString;
+    }
+
+    private void setAlarm(Alarm alarm) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        calendar.set(Calendar.MINUTE, alarm.getMinute());
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm(Alarm alarm) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 }

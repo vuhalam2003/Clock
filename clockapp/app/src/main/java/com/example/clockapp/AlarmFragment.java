@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener;
 public class AlarmFragment extends Fragment implements AlarmDialogFragment.AlarmDialogListener {
 
     private FloatingActionButton addAlarmBtn;
@@ -45,7 +45,7 @@ public class AlarmFragment extends Fragment implements AlarmDialogFragment.Alarm
         alarmRepository = new AlarmRepository(getActivity());
         alarmList = new ArrayList<>(alarmRepository.getAlarms());
 
-        alarmAdapter = new AlarmAdapter(alarmList, new AlarmAdapter.OnItemClickListener() {
+        alarmAdapter = new AlarmAdapter(alarmList, getContext(), new AlarmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Alarm alarm) {
                 showEditAlarmDialog(alarm);
@@ -135,8 +135,6 @@ public class AlarmFragment extends Fragment implements AlarmDialogFragment.Alarm
 
         builder.create().show();
     }
-
-
 
     @Override
     public void onDialogPositiveClick(Alarm alarm, String label, boolean[] repeatDays) {
